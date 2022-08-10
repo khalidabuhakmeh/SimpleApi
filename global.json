@@ -1,0 +1,12 @@
+{
+    "sdk": {
+      "version": "6.0.0",
+      "rollForward": "latestMinor",
+      "allowPrerelease": false
+    },
+    "scripts" : {
+        "up" : "dotnet ef database update",
+        "run" : "dotnet r up && dotnet run --launch-profile http",
+        "play" : "dotnet httprepl http://localhost:5251"
+    }
+}

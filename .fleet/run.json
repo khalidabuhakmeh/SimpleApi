@@ -1,0 +1,16 @@
+{
+    "configurations": [
+        {
+            "type": "command",
+            "name": "up",
+            "program": "dotnet",
+            "args": [ "r", "up" ]
+        },
+        {
+            "type" : "command",
+            "name" : "run",
+            "program" : "dotnet",
+            "args" : ["r", "run" ]
+        }
+    ]
+}
