@@ -17,4 +17,8 @@
     <PackageReference Include="SwashBuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="HelloFleet.Tests" />
+  </ItemGroup>
+
 </Project>

@@ -3,6 +3,7 @@ using FluentValidation.AspNetCore;
 using HelloFleet.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using static Microsoft.AspNetCore.Http.Results;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +12,7 @@ builder.Services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title
 builder.Services.AddDbContext<Database>(ob =>
 {
     ob.LogTo(Console.WriteLine, LogLevel.Error)
-        .UseSqlite("DataSource=database.db");
+      .UseSqlite("DataSource=database.db");
 });
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
@@ -28,46 +29,60 @@ using (var scope = app.Services.CreateScope())
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.MapGet("/", () =>
-        Results.Redirect("/swagger"))
+app.MapGet("/", () => Redirect("/swagger"))
     .ExcludeFromDescription();
 
-app.MapGet("/person", async (Database db) =>
-        await db.Persons.ToListAsync())
+app.MapGet("/person", async (Database db) => await db.Persons.ToListAsync())
     .WithName("person#index");
+
 app.MapGet("/person/{id:int}", async (Database db, int id) =>
 {
     var person = await db.Persons.FindAsync(id);
-    return person is null ? Results.NotFound() : Results.Ok(person);
+    return person is null ? NotFound() : Ok(person);
 }).WithName("person#show");
-app.MapPost("/person", async (EditPersonRequest request, Database db, IValidator<EditPersonRequest> validator) =>
+
+app.MapPost("/person", async (
+    EditPersonRequest request,
+    Database db,
+    IValidator<EditPersonRequest> validator) =>
 {
     var validation = validator.Validate(request);
     if (validation.IsValid)
     {
-        var result = db.Persons.Add(new Person { Name = request.Name });
+        var result = db.Persons.Add(new()
+        {
+            Name = request.Name!
+        });
+
         await db.SaveChangesAsync();
-        return Results.CreatedAtRoute("person#show", new { id = result.Entity.Id }, result.Entity);
+
+        return CreatedAtRoute(
+            "person#show",
+            new { id = result.Entity.Id },
+            result.Entity
+        );
     }
 
-    return Results.ValidationProblem(validation.ToDictionary());
-});
+    return ValidationProblem(validation.ToDictionary());
+}).WithName("person#create");
+
 app.MapPut("/person/{id:int}",
     async (Database db, int id, EditPersonRequest request, IValidator<EditPersonRequest> validator) =>
     {
         var entity = await db.Persons.FindAsync(id);
         if (entity is null)
-            return Results.NotFound();
+            return NotFound();
 
         var validation = validator.Validate(request);
         if (!validation.IsValid)
         {
-            return Results.ValidationProblem(validation.ToDictionary());
+            return ValidationProblem(validation.ToDictionary());
         }
 
         entity.Name = request.Name!;
-        return Results.Ok(entity);
-    });
+        return Ok(entity);
+    }).WithName("person#update");
+
 app.MapDelete("/person/{id:int}", async (Database db, int id) =>
 {
     var entity = await db.Persons.FindAsync(id);
@@ -77,7 +92,7 @@ app.MapDelete("/person/{id:int}", async (Database db, int id) =>
         await db.SaveChangesAsync();
     }
 
-    return Results.Accepted();
-});
+    return Accepted();
+}).WithName("person#destroy");
 
 app.Run();
