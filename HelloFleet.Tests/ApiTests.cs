@@ -23,6 +23,16 @@ public class ApiTests : ScenarioContext
     }
 
     [Fact]
+    public async Task GetList_Again()
+    {
+        var client = Host.CreateClient();
+        var path = Host.GenerateLink("person#list");
+        var result = await client.GetAsync(path);
+
+        Assert.Equal(Status200OK, (int)result.StatusCode);
+    }
+
+    [Fact]
     public async Task SavePerson()
     {
         var client = Host.CreateClient();

@@ -11,6 +11,12 @@
             "name" : "run",
             "program" : "dotnet",
             "args" : ["r", "run" ]
+        },
+        {
+            "type" : "command",
+            "name" : "test",
+            "program" : "dotnet",
+            "args" : [ "watch", "test", "--project", "HelloFleet.Tests" ]
         }
     ]
 }

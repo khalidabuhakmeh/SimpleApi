@@ -33,7 +33,8 @@ app.MapGet("/", () => Redirect("/swagger"))
     .ExcludeFromDescription();
 
 app.MapGet("/person", async (Database db) => await db.Persons.ToListAsync())
-    .WithName("person#index");
+    .WithName("person#index")
+    .WithName("person#list");
 
 app.MapGet("/person/{id:int}", async (Database db, int id) =>
 {
