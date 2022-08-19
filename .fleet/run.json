@@ -2,6 +2,12 @@
     "configurations": [
         {
             "type": "command",
+            "name" : "build",
+            "program" : "dotnet",
+            "args" : [ "r", "build" ]
+        },
+        {
+            "type": "command",
             "name": "up",
             "program": "dotnet",
             "args": [ "r", "up" ]

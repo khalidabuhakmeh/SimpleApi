@@ -5,6 +5,7 @@
       "allowPrerelease": false
     },
     "scripts" : {
+        "build" : "dotnet build",
         "up" : "dotnet ef database --project HelloFleet.Web update",
         "run" : "dotnet r up && dotnet run --project HelloFleet.Web --launch-profile http",
         "play" : "dotnet httprepl --project HelloFleet.Web http://localhost:5251"

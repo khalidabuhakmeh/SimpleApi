@@ -8,11 +8,17 @@ using static Microsoft.AspNetCore.Http.Results;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" }); });
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "My API", Version = "v1"
+    });
+});
 builder.Services.AddDbContext<Database>(ob =>
 {
     ob.LogTo(Console.WriteLine, LogLevel.Error)
-      .UseSqlite("DataSource=database.db");
+        .UseSqlite("DataSource=database.db");
 });
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
